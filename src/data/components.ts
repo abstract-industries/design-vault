@@ -6,64 +6,109 @@ export interface ComponentItem {
 }
 
 export const components: ComponentItem[] = [
+  // Examples
   {
-    id: "button",
-    name: "Button",
-    category: "Actions",
-    description: "Displays a button or a component that looks like a button."
+    id: "chatbot",
+    name: "Chatbot",
+    category: "Examples",
+    description: "Complete chatbot implementation using AI Elements"
+  },
+  
+  // Components
+  {
+    id: "actions",
+    name: "Actions",
+    category: "Components",
+    description: "Action buttons for message interactions"
   },
   {
-    id: "card",
-    name: "Card",
-    category: "Layout",
-    description: "Displays a card with header, content, and footer."
+    id: "branch",
+    name: "Branch",
+    category: "Components",
+    description: "Show alternative AI responses and conversation branches"
   },
   {
-    id: "input",
-    name: "Input",
-    category: "Forms",
-    description: "Displays a form input field."
+    id: "code-block",
+    name: "Code Block",
+    category: "Components",
+    description: "Syntax-highlighted code display with copy functionality"
   },
   {
-    id: "select",
-    name: "Select",
-    category: "Forms",
-    description: "Displays a dropdown select component."
+    id: "conversation",
+    name: "Conversation",
+    category: "Components",
+    description: "Container component for AI conversations and chat interfaces"
   },
   {
-    id: "dialog",
-    name: "Dialog",
-    category: "Overlay",
-    description: "A modal dialog component."
+    id: "image",
+    name: "Image",
+    category: "Components",
+    description: "Image display component with loading states and error handling"
   },
   {
-    id: "alert",
-    name: "Alert",
-    category: "Feedback",
-    description: "Displays a callout for user attention."
+    id: "inline-citation",
+    name: "Inline Citation",
+    category: "Components",
+    description: "Display inline citations and references in AI responses"
   },
   {
-    id: "badge",
-    name: "Badge",
-    category: "Data Display",
-    description: "Displays a badge component."
+    id: "loader",
+    name: "Loader",
+    category: "Components",
+    description: "Loading indicators for AI processing and streaming"
   },
   {
-    id: "avatar",
-    name: "Avatar",
-    category: "Data Display",
-    description: "An image element with a fallback for representing the user."
+    id: "message",
+    name: "Message",
+    category: "Components",
+    description: "Display individual messages in a conversation thread"
   },
   {
-    id: "tabs",
-    name: "Tabs",
-    category: "Navigation",
-    description: "A set of layered sections of content."
+    id: "prompt-input",
+    name: "Prompt Input",
+    category: "Components",
+    description: "Input field for user prompts with auto-resize and submission handling"
   },
   {
-    id: "tooltip",
-    name: "Tooltip",
-    category: "Overlay",
-    description: "A popup that displays information related to an element."
+    id: "reasoning",
+    name: "Reasoning",
+    category: "Components",
+    description: "Display AI reasoning process with expandable/collapsible view"
+  },
+  {
+    id: "response",
+    name: "Response",
+    category: "Components",
+    description: "AI response component with streaming support and formatting"
+  },
+  {
+    id: "source",
+    name: "Sources",
+    category: "Components",
+    description: "Show source references and attribution for AI responses"
+  },
+  {
+    id: "suggestion",
+    name: "Suggestion",
+    category: "Components",
+    description: "Display suggested prompts and quick actions"
+  },
+  {
+    id: "task",
+    name: "Task",
+    category: "Components",
+    description: "Display AI task progress and status updates"
+  },
+  {
+    id: "tool",
+    name: "Tool",
+    category: "Components",
+    description: "Show AI tool usage and function calls"
+  },
+  {
+    id: "web-preview",
+    name: "Web Preview",
+    category: "Components",
+    description: "Preview web content and links within the conversation"
   }
 ]
