@@ -77,7 +77,7 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
       case "message":
         return <MessageExample />
       case "chatbot":
-        return <ChatbotExample />
+        return <ChatbotExample isMobile={isMobile} />
       case "prompt-input":
         return <PromptInputExample />
       case "reasoning":
@@ -139,9 +139,9 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
       )}
       
       <div className={cn(
-        component?.id === "chatbot" && isMobile ? "safe-area-height" : 
-        component?.id === "chatbot" ? "h-[100dvh]" : "overflow-auto",
-        isMobile ? "pt-16" : "pt-24",
+        component?.id === "chatbot" && isMobile ? "h-[calc(100dvh-6rem)]" : 
+        component?.id === "chatbot" ? "h-[calc(100dvh-7rem)]" : "overflow-auto",
+        isMobile ? "mt-20" : "mt-24",
         component?.id === "chatbot" ? "" : (isMobile ? "p-4" : "p-8")
       )}>
         <div className={cn(
@@ -161,16 +161,6 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
                 </div>
               </section>
 
-              <section>
-                <h2 className="text-xl font-semibold mb-4">Usage</h2>
-                <Card>
-                  <CardContent className="pt-6">
-                    <p className="text-sm text-muted-foreground">
-                      Import and usage documentation for {component.name} component
-                    </p>
-                  </CardContent>
-                </Card>
-              </section>
             </div>
           )}
         </div>
@@ -646,7 +636,7 @@ function WebPreviewExample() {
   )
 }
 
-function ChatbotExample() {
+function ChatbotExample({ isMobile = false }: { isMobile?: boolean }) {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>('openai/gpt-4o');
   const [webSearch, setWebSearch] = useState(false);
@@ -687,7 +677,7 @@ function ChatbotExample() {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <Conversation className="h-full">
+      <Conversation className={cn("h-full", isMobile ? "pb-24" : "")}>
         <ConversationContent>
           {messages.map((message) => (
             <div key={message.id}>
@@ -755,7 +745,10 @@ function ChatbotExample() {
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="border-t pt-2 pb-6 px-4 safe-area-inset-bottom">
+      <div className={cn(
+        "border-t pt-2 pb-6 px-4 bg-background safe-area-inset-bottom",
+        isMobile ? "fixed bottom-0 left-0 right-0" : ""
+      )}>
         <PromptInput onSubmit={handleSubmit} className="mt-2">
           <PromptInputTextarea
             onChange={(e) => setInput(e.target.value)}
