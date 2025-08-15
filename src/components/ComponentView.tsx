@@ -38,6 +38,23 @@ import { Task } from "@/components/ai-elements/task"
 import { Tool } from "@/components/ai-elements/tool"
 import { WebPreview } from "@/components/ai-elements/web-preview"
 
+// Import UI components
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import {
+  ProductCarousel,
+  ProductCarouselContent,
+  ProductCarouselItem,
+  ProductCarouselNext,
+  ProductCarouselPrevious,
+} from "@/components/shop-components/product-carousel"
+
 interface ComponentViewProps {
   isMobile?: boolean
 }
@@ -46,6 +63,7 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const component = components.find(c => c.id === id)
+  const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview')
 
   if (!component) {
     return (
@@ -94,6 +112,12 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
         return <ToolExample />
       case "web-preview":
         return <WebPreviewExample />
+      case "avatar":
+        return <AvatarExample />
+      case "carousel":
+        return <CarouselExample />
+      case "product-carousel":
+        return <ProductCarouselExample />
       default:
         return (
           <Card>
@@ -108,44 +132,210 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
     }
   }
 
+  const getExampleCode = () => {
+    switch (component.id) {
+      case "avatar":
+        return (
+          <CodeBlock 
+            code={`import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+
+export function AvatarDemo() {
+  return (
+    <div className="flex flex-row flex-wrap items-center gap-12">
+      <Avatar>
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
+      <Avatar className="rounded-lg">
+        <AvatarImage
+          src="https://github.com/evilrabbit.png"
+          alt="@evilrabbit"
+        />
+        <AvatarFallback>ER</AvatarFallback>
+      </Avatar>
+      <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <Avatar>
+          <AvatarImage src="https://github.com/leerob.png" alt="@leerob" />
+          <AvatarFallback>LR</AvatarFallback>
+        </Avatar>
+        <Avatar>
+          <AvatarImage
+            src="https://github.com/evilrabbit.png"
+            alt="@evilrabbit"
+          />
+          <AvatarFallback>ER</AvatarFallback>
+        </Avatar>
+      </div>
+    </div>
+  )
+}`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+      case "carousel":
+        return (
+          <CodeBlock 
+            code={`import * as React from "react"
+
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+
+export function CarouselDemo() {
+  return (
+    <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index}>
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-4xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+      case "product-carousel":
+        return (
+          <CodeBlock 
+            code={`import * as React from "react"
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  ProductCarousel,
+  ProductCarouselContent,
+  ProductCarouselItem,
+  ProductCarouselNext,
+  ProductCarouselPrevious,
+} from "@/components/shop-components/product-carousel"
+
+export function ProductCarouselDemo() {
+  const products = [
+    { id: 1, name: "Premium Headphones", price: "$299", image: "🎧" },
+    { id: 2, name: "Smart Watch", price: "$399", image: "⌚" },
+    { id: 3, name: "Wireless Speaker", price: "$199", image: "🔊" },
+    { id: 4, name: "Gaming Mouse", price: "$79", image: "🖱️" },
+    { id: 5, name: "Mechanical Keyboard", price: "$149", image: "⌨️" },
+  ]
+
+  return (
+    <ProductCarousel className="w-full max-w-sm">
+      <ProductCarouselContent>
+        {products.map((product) => (
+          <ProductCarouselItem key={product.id}>
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="text-6xl text-center">{product.image}</div>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardTitle className="text-lg">{product.name}</CardTitle>
+                <CardDescription className="text-xl font-bold text-primary">
+                  {product.price}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </ProductCarouselItem>
+        ))}
+      </ProductCarouselContent>
+      <ProductCarouselPrevious />
+      <ProductCarouselNext />
+    </ProductCarousel>
+  )
+}`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+      case "actions":
+        return (
+          <CodeBlock
+            code={`import { Actions, Action } from "@/components/ai-elements/actions"
+import { Copy, Edit, RotateCcw } from "lucide-react"
+
+export function ActionsDemo() {
+  return (
+    <Actions>
+      <Action tooltip="Copy message" onClick={() => console.log("Copy clicked")}>
+        <Copy className="w-4 h-4" />
+      </Action>
+      <Action tooltip="Edit message" onClick={() => console.log("Edit clicked")}>
+        <Edit className="w-4 h-4" />
+      </Action>
+      <Action tooltip="Regenerate response" onClick={() => console.log("Regenerate clicked")}>
+        <RotateCcw className="w-4 h-4" />
+      </Action>
+    </Actions>
+  )
+}`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+      default:
+        return (
+          <CodeBlock
+            code={`// Code example for ${component.name} component
+// This will be implemented soon`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+    }
+  }
+
   return (
     <div className="flex-1 flex flex-col">
-      {/* Fixed header for mobile */}
+      {/* Back button for mobile */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 z-10 bg-background border-b">
-          <div className="flex items-center p-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/")}
-              className="mr-4"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <h1 className="text-lg font-semibold">{component.name}</h1>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Fixed header for desktop */}
-      {!isMobile && (
-        <div className="fixed top-0 left-64 right-0 z-10 bg-background border-b">
-          <div className="p-6">
-            <h1 className="text-3xl font-bold">{component.name}</h1>
-          </div>
+        <div className="p-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
         </div>
       )}
       
       <div className={cn(
         component?.id === "chatbot" && isMobile ? "h-[calc(100dvh-6rem)]" : 
         component?.id === "chatbot" ? "h-[calc(100dvh-7rem)]" : "overflow-auto",
-        isMobile ? "mt-20" : "mt-24",
         component?.id === "chatbot" ? "" : (isMobile ? "p-4" : "p-8")
       )}>
         <div className={cn(
-          component?.id === "chatbot" ? "h-full" : "max-w-4xl mx-auto"
+          component?.id === "chatbot" ? "h-full" : "max-w-2xl min-w-0 mx-auto"
         )}>
 
           {component.id === "chatbot" ? (
@@ -154,13 +344,44 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
           ) : (
             // Regular component layout
             <div className="space-y-8">
-              <section>
-                <h2 className="text-xl font-semibold mb-4">Examples</h2>
-                <div className="space-y-4">
-                  {getExampleComponent()}
-                </div>
-              </section>
+              {/* Component heading */}
+              <div>
+                <h1 className="text-3xl font-bold">{component.name}</h1>
+                <p className="text-muted-foreground mt-2">{component.description}</p>
+              </div>
 
+              {/* Tab navigation */}
+              <div className="flex gap-2 border-b">
+                <Button
+                  variant={activeTab === 'preview' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveTab('preview')}
+                  className="rounded-b-none"
+                >
+                  Preview
+                </Button>
+                <Button
+                  variant={activeTab === 'code' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveTab('code')}
+                  className="rounded-b-none"
+                >
+                  Code
+                </Button>
+              </div>
+
+              {/* Content container */}
+              <div className="w-full h-[480px] border rounded-lg">
+                {activeTab === 'preview' ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    {getExampleComponent()}
+                  </div>
+                ) : (
+                  <div className="w-full h-full p-4 overflow-auto">
+                    {getExampleCode()}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -172,25 +393,17 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
 // Example Components
 function ActionsExample() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Message Actions</CardTitle>
-        <CardDescription>Interactive action buttons for messages</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Actions>
-          <Action tooltip="Copy message" onClick={() => console.log("Copy clicked")}>
-            <Copy className="w-4 h-4" />
-          </Action>
-          <Action tooltip="Edit message" onClick={() => console.log("Edit clicked")}>
-            <Edit className="w-4 h-4" />
-          </Action>
-          <Action tooltip="Regenerate response" onClick={() => console.log("Regenerate clicked")}>
-            <RotateCcw className="w-4 h-4" />
-          </Action>
-        </Actions>
-      </CardContent>
-    </Card>
+    <Actions>
+      <Action tooltip="Copy message" onClick={() => console.log("Copy clicked")}>
+        <Copy className="w-4 h-4" />
+      </Action>
+      <Action tooltip="Edit message" onClick={() => console.log("Edit clicked")}>
+        <Edit className="w-4 h-4" />
+      </Action>
+      <Action tooltip="Regenerate response" onClick={() => console.log("Regenerate clicked")}>
+        <RotateCcw className="w-4 h-4" />
+      </Action>
+    </Actions>
   )
 }
 
@@ -786,5 +999,96 @@ function ChatbotExample({ isMobile = false }: { isMobile?: boolean }) {
         </PromptInput>
       </div>
     </div>
+  )
+}
+
+function AvatarExample() {
+  return (
+    <div className="flex flex-row flex-wrap items-center gap-12">
+      <Avatar>
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
+      <Avatar className="rounded-lg">
+        <AvatarImage
+          src="https://github.com/evilrabbit.png"
+          alt="@evilrabbit"
+        />
+        <AvatarFallback>ER</AvatarFallback>
+      </Avatar>
+      <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:grayscale">
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <Avatar>
+          <AvatarImage src="https://github.com/leerob.png" alt="@leerob" />
+          <AvatarFallback>LR</AvatarFallback>
+        </Avatar>
+        <Avatar>
+          <AvatarImage
+            src="https://github.com/evilrabbit.png"
+            alt="@evilrabbit"
+          />
+          <AvatarFallback>ER</AvatarFallback>
+        </Avatar>
+      </div>
+    </div>
+  )
+}
+
+function CarouselExample() {
+  return (
+    <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index}>
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-4xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}
+
+function ProductCarouselExample() {
+  const products = [
+    { id: 1, name: "Premium Headphones", price: "$299", image: "🎧" },
+    { id: 2, name: "Smart Watch", price: "$399", image: "⌚" },
+    { id: 3, name: "Wireless Speaker", price: "$199", image: "🔊" },
+    { id: 4, name: "Gaming Mouse", price: "$79", image: "🖱️" },
+    { id: 5, name: "Mechanical Keyboard", price: "$149", image: "⌨️" },
+  ]
+
+  return (
+    <ProductCarousel className="w-full max-w-sm">
+      <ProductCarouselContent>
+        {products.map((product) => (
+          <ProductCarouselItem key={product.id}>
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="text-6xl text-center">{product.image}</div>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardTitle className="text-lg">{product.name}</CardTitle>
+                <CardDescription className="text-xl font-bold text-primary">
+                  {product.price}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </ProductCarouselItem>
+        ))}
+      </ProductCarouselContent>
+      <ProductCarouselPrevious />
+      <ProductCarouselNext />
+    </ProductCarousel>
   )
 }
