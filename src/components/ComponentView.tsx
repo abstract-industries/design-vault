@@ -227,45 +227,50 @@ export function CarouselDemo() {
           <CodeBlock 
             code={`import * as React from "react"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import {
   ProductCarousel,
-  ProductCarouselContent,
   ProductCarouselItem,
-  ProductCarouselNext,
-  ProductCarouselPrevious,
 } from "@/components/shop-components/product-carousel"
 
 export function ProductCarouselDemo() {
   const products = [
-    { id: 1, name: "Premium Headphones", price: "$299", image: "🎧" },
-    { id: 2, name: "Smart Watch", price: "$399", image: "⌚" },
-    { id: 3, name: "Wireless Speaker", price: "$199", image: "🔊" },
-    { id: 4, name: "Gaming Mouse", price: "$79", image: "🖱️" },
-    { id: 5, name: "Mechanical Keyboard", price: "$149", image: "⌨️" },
+    { id: 1, name: "Premium Headphones", byline: "Wireless • Noise Cancelling", price: "$299", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop" },
+    { id: 2, name: "Smart Watch", byline: "Series 9 • GPS + Cellular", price: "$399", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop" },
+    { id: 3, name: "Wireless Speaker", byline: "Bluetooth • Waterproof", price: "$199", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop" },
+    { id: 4, name: "Gaming Mouse", byline: "RGB • 16000 DPI", price: "$79", image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop" },
+    { id: 5, name: "Mechanical Keyboard", byline: "Cherry MX • RGB Backlit", price: "$149", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=300&fit=crop" },
   ]
+
+  const handleProductClick = (product: typeof products[0]) => {
+    console.log("Product clicked:", product)
+  }
 
   return (
     <ProductCarousel className="w-full max-w-sm">
-      <ProductCarouselContent>
-        {products.map((product) => (
-          <ProductCarouselItem key={product.id}>
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="text-6xl text-center">{product.image}</div>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardTitle className="text-lg">{product.name}</CardTitle>
-                <CardDescription className="text-xl font-bold text-primary">
-                  {product.price}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </ProductCarouselItem>
-        ))}
-      </ProductCarouselContent>
-      <ProductCarouselPrevious />
-      <ProductCarouselNext />
+      {products.map((product) => (
+        <ProductCarouselItem key={product.id}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+            onClick={() => handleProductClick(product)}
+          >
+            <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <CardContent className="p-4">
+              <CardTitle className="text-lg text-left mb-1">{product.name}</CardTitle>
+              <p className="text-sm text-muted-foreground text-left mb-2">{product.byline}</p>
+              <p className="text-xl font-bold text-primary text-left">
+                {product.price}
+              </p>
+            </CardContent>
+          </Card>
+        </ProductCarouselItem>
+      ))}
     </ProductCarousel>
   )
 }`}
@@ -373,7 +378,7 @@ export function ActionsDemo() {
               {/* Content container */}
               <div className="w-full h-[480px] border rounded-lg">
                 {activeTab === 'preview' ? (
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center overflow-hidden">
                     {getExampleComponent()}
                   </div>
                 ) : (
@@ -1061,34 +1066,42 @@ function CarouselExample() {
 
 function ProductCarouselExample() {
   const products = [
-    { id: 1, name: "Premium Headphones", price: "$299", image: "🎧" },
-    { id: 2, name: "Smart Watch", price: "$399", image: "⌚" },
-    { id: 3, name: "Wireless Speaker", price: "$199", image: "🔊" },
-    { id: 4, name: "Gaming Mouse", price: "$79", image: "🖱️" },
-    { id: 5, name: "Mechanical Keyboard", price: "$149", image: "⌨️" },
+    { id: 1, name: "Premium Headphones", byline: "Wireless • Noise Cancelling", price: "$299", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop" },
+    { id: 2, name: "Smart Watch", byline: "Series 9 • GPS + Cellular", price: "$399", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop" },
+    { id: 3, name: "Wireless Speaker", byline: "Bluetooth • Waterproof", price: "$199", image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop" },
+    { id: 4, name: "Gaming Mouse", byline: "RGB • 16000 DPI", price: "$79", image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop" },
+    { id: 5, name: "Mechanical Keyboard", byline: "Cherry MX • RGB Backlit", price: "$149", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=300&fit=crop" },
   ]
+
+  const handleProductClick = (product: typeof products[0]) => {
+    console.log("Product clicked:", product)
+  }
 
   return (
     <ProductCarousel className="w-full max-w-sm">
-      <ProductCarouselContent>
-        {products.map((product) => (
-          <ProductCarouselItem key={product.id}>
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="text-6xl text-center">{product.image}</div>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardTitle className="text-lg">{product.name}</CardTitle>
-                <CardDescription className="text-xl font-bold text-primary">
-                  {product.price}
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </ProductCarouselItem>
-        ))}
-      </ProductCarouselContent>
-      <ProductCarouselPrevious />
-      <ProductCarouselNext />
+      {products.map((product) => (
+        <ProductCarouselItem key={product.id}>
+          <Card 
+            className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+            onClick={() => handleProductClick(product)}
+          >
+            <div className="aspect-[4/3] overflow-hidden rounded-t-lg">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <CardContent className="p-4">
+              <CardTitle className="text-lg text-left mb-1">{product.name}</CardTitle>
+              <p className="text-sm text-muted-foreground text-left mb-2">{product.byline}</p>
+              <p className="text-xl font-bold text-primary text-left">
+                {product.price}
+              </p>
+            </CardContent>
+          </Card>
+        </ProductCarouselItem>
+      ))}
     </ProductCarousel>
   )
 }
