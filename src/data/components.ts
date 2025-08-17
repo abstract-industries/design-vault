@@ -13,6 +13,12 @@ export const components: ComponentItem[] = [
     category: "Examples",
     description: "Complete chatbot implementation using AI Elements"
   },
+  {
+    id: "ai-chat-nutrition",
+    name: "AI Chat Nutrition",
+    category: "Examples",
+    description: "AI chat with nutrition tracking and calorie analysis"
+  },
   
   // Calorie
   {

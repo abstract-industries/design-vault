@@ -55,6 +55,7 @@ import {
   ProductCarouselPrevious,
 } from "@/components/shop-components/product-carousel"
 import { ChartRadialSimple } from "@/components/calorie-components/chart-radial-simple"
+import { AIChatNutritionExample } from "@/components/examples/ai-chat-nutrition"
 
 interface ComponentViewProps {
   isMobile?: boolean
@@ -97,6 +98,8 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
         return <MessageExample />
       case "chatbot":
         return <ChatbotExample isMobile={isMobile} />
+      case "ai-chat-nutrition":
+        return <AIChatNutritionExample />
       case "prompt-input":
         return <PromptInputExample />
       case "reasoning":
@@ -491,9 +494,9 @@ export function ActionsDemo() {
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col h-full">
       {/* Back button for mobile */}
-      {isMobile && (
+      {isMobile && (component?.id === "chatbot" || component?.id === "ai-chat-nutrition") && (
         <div className="p-4">
           <Button
             variant="ghost"
@@ -507,16 +510,15 @@ export function ActionsDemo() {
       )}
       
       <div className={cn(
-        component?.id === "chatbot" && isMobile ? "h-[calc(100dvh-6rem)]" : 
-        component?.id === "chatbot" ? "h-[calc(100dvh-7rem)]" : "overflow-auto",
-        component?.id === "chatbot" ? "" : (isMobile ? "p-4" : "p-8")
+        (component?.id === "chatbot" || component?.id === "ai-chat-nutrition") ? "flex-1 overflow-hidden" : "overflow-auto",
+        (component?.id === "chatbot" || component?.id === "ai-chat-nutrition") ? "" : (isMobile ? "p-4" : "p-8")
       )}>
         <div className={cn(
-          component?.id === "chatbot" ? "h-full" : "max-w-2xl min-w-0 mx-auto"
+          (component?.id === "chatbot" || component?.id === "ai-chat-nutrition") ? "h-full" : "max-w-2xl min-w-0 mx-auto"
         )}>
 
-          {component.id === "chatbot" ? (
-            // Full-height chatbot example
+          {(component.id === "chatbot" || component.id === "ai-chat-nutrition") ? (
+            // Full-height chatbot/ai-chat examples
             getExampleComponent()
           ) : (
             // Regular component layout

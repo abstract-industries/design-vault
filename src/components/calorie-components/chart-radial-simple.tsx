@@ -2,7 +2,7 @@
 
 import { Flame, Beef, Droplet, Wheat } from "lucide-react"
 import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 import {
   Card,
@@ -20,53 +20,6 @@ import {
 import type { ChartConfig } from "@/components/ui/chart"
 
 export const description = "A calorie tracking radial chart"
-
-const originalChartData = [
-  { 
-    name: "carbs", 
-    value: 65, 
-    displayValue: 65,
-    max: 100,
-    fill: "hsl(142, 71%, 45%)", // Green matching Wheat icon
-    grams: "162g / 250g",
-    actualGrams: 162,
-    targetGrams: 250,
-    isOver: false
-  },
-  { 
-    name: "fat", 
-    value: 100, // Capped at 100 for display
-    displayValue: 115, // Actual value over 100
-    max: 100,
-    fill: "hsl(48, 96%, 53%)", // Yellow matching Droplet icon
-    grams: "77g / 67g",
-    actualGrams: 77,
-    targetGrams: 67,
-    isOver: true
-  },
-  { 
-    name: "protein", 
-    value: 85, 
-    displayValue: 85,
-    max: 100,
-    fill: "hsl(0, 84%, 60%)", // Red matching Beef icon
-    grams: "106g / 125g",
-    actualGrams: 106,
-    targetGrams: 125,
-    isOver: false
-  },
-  { 
-    name: "calories", 
-    value: 75, 
-    displayValue: 75,
-    max: 100,
-    fill: "hsl(217, 91%, 60%)", // Blue for calories
-    amount: "1,875 / 2,500",
-    actualAmount: 1875,
-    targetAmount: 2500,
-    isOver: false
-  },
-]
 
 const chartConfig = {
   value: {
@@ -111,17 +64,79 @@ function getShortTime(date: Date): string {
   }).toLowerCase()
 }
 
-export function ChartRadialSimple() {
+interface ChartRadialSimpleProps {
+  calories?: number;
+  maxCalories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+}
+
+export function ChartRadialSimple({
+  calories = 1875,
+  maxCalories = 2500,
+  protein = 106,
+  carbs = 162,
+  fat = 48
+}: ChartRadialSimpleProps = {}) {
   const [currentDate] = useState(new Date())
   const [hoveredMacro, setHoveredMacro] = useState<string | null>(null)
   
-  // Create chart data with hover effects
+  // Create dynamic chart data based on props
+  const baseChartData = [
+    { 
+      name: "carbs", 
+      value: Math.min((carbs / 250) * 100, 100), 
+      displayValue: (carbs / 250) * 100,
+      max: 100,
+      fill: "hsl(142, 71%, 45%)",
+      grams: `${carbs}g / 250g`,
+      actualGrams: carbs,
+      targetGrams: 250,
+      isOver: carbs > 250
+    },
+    { 
+      name: "fat", 
+      value: Math.min((fat / 67) * 100, 100),
+      displayValue: (fat / 67) * 100,
+      max: 100,
+      fill: "hsl(48, 96%, 53%)",
+      grams: `${fat}g / 67g`,
+      actualGrams: fat,
+      targetGrams: 67,
+      isOver: fat > 67
+    },
+    { 
+      name: "protein", 
+      value: Math.min((protein / 125) * 100, 100),
+      displayValue: (protein / 125) * 100,
+      max: 100,
+      fill: "hsl(0, 72%, 51%)",
+      grams: `${protein}g / 125g`,
+      actualGrams: protein,
+      targetGrams: 125,
+      isOver: protein > 125
+    },
+    { 
+      name: "calories", 
+      value: Math.min((calories / maxCalories) * 100, 100),
+      displayValue: (calories / maxCalories) * 100,
+      max: 100,
+      fill: "hsl(25, 95%, 53%)",
+      amount: `${calories.toLocaleString()} / ${maxCalories.toLocaleString()}`,
+      actualCalories: calories,
+      targetCalories: maxCalories,
+      isOver: calories > maxCalories
+    },
+  ]
+  
+  // Apply hover effects
   const chartData = hoveredMacro 
-    ? originalChartData.map(item => ({
+    ? baseChartData.map(item => ({
         ...item,
         fill: item.name === hoveredMacro ? item.fill : "hsl(0, 0%, 80%)" // Gray out non-hovered
       }))
-    : originalChartData
+    : baseChartData
   
   return (
     <Card className="flex flex-col">
@@ -220,7 +235,7 @@ export function ChartRadialSimple() {
             />
             <div className="space-y-0.5">
               <p className="text-xs text-muted-foreground">Calories</p>
-              <p className="text-sm font-medium">1,875 / 2,500</p>
+              <p className="text-sm font-medium">{calories.toLocaleString()} / {maxCalories.toLocaleString()}</p>
             </div>
           </div>
           <div 
@@ -241,7 +256,7 @@ export function ChartRadialSimple() {
             />
             <div className="space-y-0.5">
               <p className="text-xs text-muted-foreground">Protein</p>
-              <p className="text-sm font-medium">106g / 125g</p>
+              <p className="text-sm font-medium">{protein}g / 125g</p>
             </div>
           </div>
           <div 
@@ -263,8 +278,14 @@ export function ChartRadialSimple() {
             <div className="space-y-0.5">
               <p className="text-xs text-muted-foreground">Fat</p>
               <p className="text-sm font-medium">
-                <span style={{ color: "hsl(0, 84%, 60%)" }}>77g</span>
-                <span> / 67g</span>
+                {fat > 67 ? (
+                  <>
+                    <span style={{ color: "hsl(0, 84%, 60%)" }}>{fat}g</span>
+                    <span> / 67g</span>
+                  </>
+                ) : (
+                  `${fat}g / 67g`
+                )}
               </p>
             </div>
           </div>
@@ -286,7 +307,7 @@ export function ChartRadialSimple() {
             />
             <div className="space-y-0.5">
               <p className="text-xs text-muted-foreground">Carbs</p>
-              <p className="text-sm font-medium">162g / 250g</p>
+              <p className="text-sm font-medium">{carbs}g / 250g</p>
             </div>
           </div>
         </div>
