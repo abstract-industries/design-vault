@@ -14,6 +14,22 @@ export const components: ComponentItem[] = [
     description: "Complete chatbot implementation using AI Elements"
   },
   
+  // Calorie
+  {
+    id: "chart-radial-simple",
+    name: "Nutrition Tracker",
+    category: "Calorie",
+    description: "Radial chart for tracking daily calories and macronutrients"
+  },
+  
+  // Shop
+  {
+    id: "product-carousel",
+    name: "Product Carousel",
+    category: "Shop",
+    description: "Product showcase carousel with peek effect and hover navigation"
+  },
+  
   // AI
   {
     id: "actions",
@@ -110,14 +126,6 @@ export const components: ComponentItem[] = [
     name: "Web Preview",
     category: "AI",
     description: "Preview web content and links within the conversation"
-  },
-  
-  // Shop
-  {
-    id: "product-carousel",
-    name: "Product Carousel",
-    category: "Shop",
-    description: "Product showcase carousel with peek effect and hover navigation"
   },
   
   // UI

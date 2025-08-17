@@ -54,6 +54,7 @@ import {
   ProductCarouselNext,
   ProductCarouselPrevious,
 } from "@/components/shop-components/product-carousel"
+import { ChartRadialSimple } from "@/components/calorie-components/chart-radial-simple"
 
 interface ComponentViewProps {
   isMobile?: boolean
@@ -118,6 +119,8 @@ export function ComponentView({ isMobile = false }: ComponentViewProps) {
         return <CarouselExample />
       case "product-carousel":
         return <ProductCarouselExample />
+      case "chart-radial-simple":
+        return <ChartRadialSimpleExample />
       default:
         return (
           <Card>
@@ -215,6 +218,175 @@ export function CarouselDemo() {
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
+  )
+}`}
+            language="tsx"
+          >
+            <CodeBlockCopyButton />
+          </CodeBlock>
+        )
+      case "chart-radial-simple":
+        return (
+          <CodeBlock
+            code={`import { Flame, Beef, Droplet, Wheat } from "lucide-react"
+import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import type { ChartConfig } from "@/components/ui/chart"
+
+const chartData = [
+  { 
+    name: "carbs", 
+    value: 65, 
+    max: 100,
+    fill: "var(--color-carbs)",
+    grams: "162g / 250g"
+  },
+  { 
+    name: "fat", 
+    value: 72, 
+    max: 100,
+    fill: "var(--color-fat)",
+    grams: "48g / 67g"
+  },
+  { 
+    name: "protein", 
+    value: 85, 
+    max: 100,
+    fill: "var(--color-protein)",
+    grams: "106g / 125g"
+  },
+  { 
+    name: "calories", 
+    value: 75, 
+    max: 100,
+    fill: "var(--color-calories)",
+    amount: "1,875 / 2,500"
+  },
+]
+
+const chartConfig = {
+  value: {
+    label: "Progress",
+  },
+  calories: {
+    label: "Calories",
+    color: "hsl(var(--chart-1))",
+  },
+  protein: {
+    label: "Protein",
+    color: "hsl(var(--chart-2))",
+  },
+  fat: {
+    label: "Fat",
+    color: "hsl(var(--chart-3))",
+  },
+  carbs: {
+    label: "Carbs",
+    color: "hsl(var(--chart-4))",
+  },
+} satisfies ChartConfig
+
+export function NutritionTracker() {
+  return (
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0">
+        <CardTitle>Daily Nutrition</CardTitle>
+        <CardDescription>Track your macros and calories</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
+        >
+          <RadialBarChart 
+            data={chartData} 
+            startAngle={90} 
+            endAngle={-270}
+            innerRadius={30} 
+            outerRadius={110}
+          >
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent 
+                  hideLabel 
+                  nameKey="name"
+                  formatter={(value, name, item) => (
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 w-2 shrink-0 rounded-[2px]" style={{ backgroundColor: item.payload.fill }} />
+                        <span className="capitalize">{name}</span>
+                      </div>
+                      <span className="font-mono font-medium tabular-nums text-foreground">
+                        {item.payload.grams || item.payload.amount}
+                      </span>
+                    </div>
+                  )}
+                />
+              }
+            />
+            <PolarAngleAxis
+              type="number"
+              domain={[0, 100]}
+              angleAxisId={0}
+              tick={false}
+            />
+            <RadialBar 
+              dataKey="value" 
+              background
+              cornerRadius={10}
+              fill="var(--color-calories)"
+              stackId="a"
+            />
+          </RadialBarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="flex-col gap-2 text-sm">
+        <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="flex items-center gap-2">
+            <Flame className="h-4 w-4 text-orange-500" />
+            <div className="space-y-0.5">
+              <p className="text-xs text-muted-foreground">Calories</p>
+              <p className="text-sm font-medium">1,875 / 2,500</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Beef className="h-4 w-4 text-red-500" />
+            <div className="space-y-0.5">
+              <p className="text-xs text-muted-foreground">Protein</p>
+              <p className="text-sm font-medium">106g / 125g</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Droplet className="h-4 w-4 text-yellow-500" />
+            <div className="space-y-0.5">
+              <p className="text-xs text-muted-foreground">Fat</p>
+              <p className="text-sm font-medium">48g / 67g</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Wheat className="h-4 w-4 text-green-500" />
+            <div className="space-y-0.5">
+              <p className="text-xs text-muted-foreground">Carbs</p>
+              <p className="text-sm font-medium">162g / 250g</p>
+            </div>
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
   )
 }`}
             language="tsx"
@@ -1062,6 +1234,10 @@ function CarouselExample() {
       <CarouselNext />
     </Carousel>
   )
+}
+
+function ChartRadialSimpleExample() {
+  return <ChartRadialSimple />
 }
 
 function ProductCarouselExample() {
