@@ -1,11 +1,12 @@
 'use client';
 
+import * as motion from 'motion/react-client';
 import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
 import { Response } from '@/components/ai-elements/response';
 import { Actions, Action } from '@/components/ai-elements/actions';
 import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-elements/reasoning';
 import { PromptInput, PromptInputTextarea, PromptInputToolbar, PromptInputSubmit } from '@/components/ai-elements/prompt-input';
-import { ChartRadialSimple } from '@/components/calorie-components/chart-radial-simple';
+import { ChartRadialClickable } from '@/components/calorie-components/chart-radial-clickable';
 import { Tool, ToolHeader, ToolContent, ToolInput, ToolOutput } from '@/components/ai-elements/tool';
 import { Copy, Edit3, RotateCw } from 'lucide-react';
 
@@ -29,9 +30,22 @@ interface Message {
 interface AIChatNutritionChatProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onChartClick?: () => void;
+  totalCalories?: number;
+  totalProtein?: number;
+  totalCarbs?: number;
+  totalFat?: number;
 }
 
-export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionChatProps) {
+export function AIChatNutritionChat({ 
+  messages, 
+  setMessages,
+  onChartClick,
+  totalCalories = 1520,
+  totalProtein = 67,
+  totalCarbs = 147,
+  totalFat = 63
+}: AIChatNutritionChatProps) {
   const handleCopy = (messageId: string) => {
     const message = messages.find(m => m.id === messageId);
     if (message?.content) {
@@ -53,8 +67,13 @@ export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionCh
     <div className="h-full flex flex-col bg-background relative">
       <Conversation className="h-full">
         <ConversationContent className="max-w-3xl mx-auto w-full p-4 pb-40">
-          {messages.map((message) => (
-            <div key={message.id} className="mb-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+          >
+            {messages.map((message) => (
+              <div key={message.id} className="mb-6">
               {message.role === 'user' ? (
                 <div className="flex justify-end">
                   <div className="max-w-[80%] rounded-lg bg-primary text-primary-foreground px-4 py-2">
@@ -128,20 +147,6 @@ export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionCh
                     ) : (
                       <div className="text-sm">{message.content}</div>
                     )}
-                    
-                    {message.showChart && (
-                      <div className="mt-6">
-                        <div className="w-full max-w-sm">
-                          <ChartRadialSimple 
-                            calories={1520}
-                            maxCalories={2000}
-                            protein={67}
-                            carbs={147}
-                            fat={63}
-                          />
-                        </div>
-                      </div>
-                    )}
                   </div>
                   
                   {message.showActions && (
@@ -170,11 +175,32 @@ export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionCh
               )}
             </div>
           ))}
+          </motion.div>
+          
+          {/* Render chart outside of fade wrapper */}
+          {messages.some(m => m.showChart) && (
+            <div className="mt-6 mb-6">
+              <div className="w-full max-w-sm">
+                <ChartRadialClickable 
+                  calories={totalCalories}
+                  maxCalories={2000}
+                  protein={totalProtein}
+                  carbs={totalCarbs}
+                  fat={totalFat}
+                  onClick={onChartClick}
+                />
+              </div>
+            </div>
+          )}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
       
-      <div className="absolute bottom-0 left-0 right-0 p-4 pb-8">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+        exit={{ opacity: 0, transition: { duration: 0.2 } }}
+        className="absolute bottom-0 left-0 right-0 p-4 pb-8">
         <div className="max-w-3xl mx-auto">
           <PromptInput
             onSubmit={(e) => {
@@ -198,7 +224,7 @@ export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionCh
             </PromptInputToolbar>
           </PromptInput>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

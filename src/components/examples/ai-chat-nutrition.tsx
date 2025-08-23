@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { LayoutGroup } from 'motion/react';
 import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
-import { AIChatNutritionChat } from './ai-chat-nutrition-chat';
-import { AIChatNutritionUI } from './ai-chat-nutrition-ui';
+import { AIChatNutritionLayout } from './ai-chat-nutrition-layout';
 
 interface Message {
   id: string;
@@ -239,28 +239,27 @@ How's this look?`,
   const totalFat = foodLog.reduce((sum, item) => sum + item.fat, 0);
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      <AIChatNutritionHeader 
-        currentView={currentView} 
-        onViewChange={setCurrentView} 
-      />
-      
-      <div className="flex-1 overflow-hidden">
-        {currentView === 'chat' ? (
-          <AIChatNutritionChat 
-            messages={messages} 
-            setMessages={setMessages} 
-          />
-        ) : (
-          <AIChatNutritionUI 
+    <LayoutGroup>
+      <div className="h-full flex flex-col bg-background">
+        <AIChatNutritionHeader 
+          currentView={currentView} 
+          onViewChange={setCurrentView} 
+        />
+        
+        <div className="flex-1 overflow-hidden relative">
+          <AIChatNutritionLayout
+            currentView={currentView}
+            onViewChange={setCurrentView}
+            messages={messages}
+            setMessages={setMessages}
             foodLog={foodLog}
             totalCalories={totalCalories}
             totalProtein={totalProtein}
             totalCarbs={totalCarbs}
             totalFat={totalFat}
           />
-        )}
+        </div>
       </div>
-    </div>
+    </LayoutGroup>
   );
 };
