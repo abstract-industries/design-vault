@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { LayoutGroup } from 'motion/react';
-import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
 import { AIChatNutritionLayout } from './ai-chat-nutrition-layout';
 
 interface Message {
@@ -241,11 +240,6 @@ How's this look?`,
   return (
     <LayoutGroup>
       <div className="h-full flex flex-col bg-background">
-        <AIChatNutritionHeader 
-          currentView={currentView} 
-          onViewChange={setCurrentView} 
-        />
-        
         <div className="flex-1 overflow-hidden relative">
           <AIChatNutritionLayout
             currentView={currentView}
