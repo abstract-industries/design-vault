@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ChartRadialSimple } from '@/components/calorie-components/chart-radial-simple';
+import { ChartRadialClickable } from '@/components/calorie-components/chart-radial-clickable';
 import {
   Table,
   TableBody,
@@ -36,6 +36,7 @@ interface AIChatNutritionUIProps {
   totalProtein: number;
   totalCarbs: number;
   totalFat: number;
+  onChartClick?: () => void;
 }
 
 function getSemanticDateTitle(date: Date): string {
@@ -57,7 +58,8 @@ export function AIChatNutritionUI({
   totalCalories, 
   totalProtein, 
   totalCarbs, 
-  totalFat 
+  totalFat,
+  onChartClick 
 }: AIChatNutritionUIProps) {
   const [date, setDate] = useState<Date>(new Date());
 
@@ -96,12 +98,13 @@ export function AIChatNutritionUI({
 
           {/* Nutrition Chart */}
           <div className="w-full max-w-sm">
-            <ChartRadialSimple
+            <ChartRadialClickable
               calories={totalCalories}
               maxCalories={2000}
               protein={totalProtein}
               carbs={totalCarbs}
               fat={totalFat}
+              onClick={onChartClick}
             />
           </div>
 

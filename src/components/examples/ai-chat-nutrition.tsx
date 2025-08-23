@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatePresence, LayoutGroup } from 'motion/react';
+import * as motion from 'motion/react-client';
 import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
 import { AIChatNutritionChat } from './ai-chat-nutrition-chat';
 import { AIChatNutritionUI } from './ai-chat-nutrition-ui';
@@ -239,28 +241,56 @@ How's this look?`,
   const totalFat = foodLog.reduce((sum, item) => sum + item.fat, 0);
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      <AIChatNutritionHeader 
-        currentView={currentView} 
-        onViewChange={setCurrentView} 
-      />
-      
-      <div className="flex-1 overflow-hidden">
-        {currentView === 'chat' ? (
-          <AIChatNutritionChat 
-            messages={messages} 
-            setMessages={setMessages} 
-          />
-        ) : (
-          <AIChatNutritionUI 
-            foodLog={foodLog}
-            totalCalories={totalCalories}
-            totalProtein={totalProtein}
-            totalCarbs={totalCarbs}
-            totalFat={totalFat}
-          />
-        )}
+    <LayoutGroup>
+      <div className="h-full flex flex-col bg-background">
+        <AIChatNutritionHeader 
+          currentView={currentView} 
+          onViewChange={setCurrentView} 
+        />
+        
+        <div className="flex-1 overflow-hidden relative">
+          <AnimatePresence mode="wait">
+            {currentView === 'chat' ? (
+              <motion.div
+                key="chat"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="h-full"
+              >
+                <AIChatNutritionChat 
+                  messages={messages} 
+                  setMessages={setMessages}
+                  onChartClick={() => setCurrentView('ui')}
+                  totalCalories={totalCalories}
+                  totalProtein={totalProtein}
+                  totalCarbs={totalCarbs}
+                  totalFat={totalFat}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="ui"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="h-full"
+              >
+                <AIChatNutritionUI 
+                  foodLog={foodLog}
+                  totalCalories={totalCalories}
+                  totalProtein={totalProtein}
+                  totalCarbs={totalCarbs}
+                  totalFat={totalFat}
+                  onChartClick={() => setCurrentView('chat')}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
+    </LayoutGroup>
   );
 };

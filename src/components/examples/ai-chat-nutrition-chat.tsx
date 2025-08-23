@@ -5,7 +5,7 @@ import { Response } from '@/components/ai-elements/response';
 import { Actions, Action } from '@/components/ai-elements/actions';
 import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-elements/reasoning';
 import { PromptInput, PromptInputTextarea, PromptInputToolbar, PromptInputSubmit } from '@/components/ai-elements/prompt-input';
-import { ChartRadialSimple } from '@/components/calorie-components/chart-radial-simple';
+import { ChartRadialClickable } from '@/components/calorie-components/chart-radial-clickable';
 import { Tool, ToolHeader, ToolContent, ToolInput, ToolOutput } from '@/components/ai-elements/tool';
 import { Copy, Edit3, RotateCw } from 'lucide-react';
 
@@ -29,9 +29,22 @@ interface Message {
 interface AIChatNutritionChatProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onChartClick?: () => void;
+  totalCalories?: number;
+  totalProtein?: number;
+  totalCarbs?: number;
+  totalFat?: number;
 }
 
-export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionChatProps) {
+export function AIChatNutritionChat({ 
+  messages, 
+  setMessages,
+  onChartClick,
+  totalCalories = 1520,
+  totalProtein = 67,
+  totalCarbs = 147,
+  totalFat = 63
+}: AIChatNutritionChatProps) {
   const handleCopy = (messageId: string) => {
     const message = messages.find(m => m.id === messageId);
     if (message?.content) {
@@ -132,12 +145,13 @@ export function AIChatNutritionChat({ messages, setMessages }: AIChatNutritionCh
                     {message.showChart && (
                       <div className="mt-6">
                         <div className="w-full max-w-sm">
-                          <ChartRadialSimple 
-                            calories={1520}
+                          <ChartRadialClickable 
+                            calories={totalCalories}
                             maxCalories={2000}
-                            protein={67}
-                            carbs={147}
-                            fat={63}
+                            protein={totalProtein}
+                            carbs={totalCarbs}
+                            fat={totalFat}
+                            onClick={onChartClick}
                           />
                         </div>
                       </div>
