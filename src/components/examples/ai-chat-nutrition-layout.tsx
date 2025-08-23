@@ -175,7 +175,7 @@ export function AIChatNutritionLayout({
                     </>
                   ) : message.type === 'tool' && message.toolData ? (
                     <div className="mb-4">
-                      <Tool defaultOpen>
+                      <Tool defaultOpen={false}>
                         <ToolHeader 
                           type={message.toolData.type as any}
                           state={message.toolData.state}
@@ -256,10 +256,7 @@ export function AIChatNutritionLayout({
           
           {/* Gradient overlay to fade conversation behind prompt */}
           <div 
-            className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to top, rgb(255 255 255 / 1) 0%, rgb(255 255 255 / 1) 10%, rgb(255 255 255 / 0) 100%)'
-            }}
+            className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none bg-gradient-to-t from-background via-background/100 via-10% to-background/0"
           />
           
           <div className="absolute bottom-0 left-0 right-0 p-4 pb-4">
@@ -281,7 +278,7 @@ export function AIChatNutritionLayout({
                   }
                 }}
               >
-                <PromptInputTextarea placeholder="Tell me what you ate..." />
+                <PromptInputTextarea placeholder="Chat about food..." />
                 <PromptInputToolbar>
                   <div className="flex-1" />
                   <PromptInputSubmit />
@@ -366,14 +363,17 @@ export function AIChatNutritionLayout({
             {/* Food Log */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Log</h2>
-              <div className="rounded-md border">
+              <div className="rounded-md border overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>Item</TableHead>
+                      <TableHead>Quantity</TableHead>
                       <TableHead className="text-right">Calories</TableHead>
-                      <TableHead className="text-right">Carbs</TableHead>
+                      <TableHead className="text-right">Carbs (g)</TableHead>
+                      <TableHead className="text-right">Protein (g)</TableHead>
+                      <TableHead className="text-right">Fat (g)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -382,13 +382,16 @@ export function AIChatNutritionLayout({
                         <TableRow key={item.id}>
                           <TableCell className="font-medium">{index + 1}</TableCell>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell className="text-right">{item.calories} cal</TableCell>
-                          <TableCell className="text-right">{item.carbs}g carb</TableCell>
+                          <TableCell>1 serving</TableCell>
+                          <TableCell className="text-right">{item.calories}</TableCell>
+                          <TableCell className="text-right">{item.carbs}</TableCell>
+                          <TableCell className="text-right">{item.protein}</TableCell>
+                          <TableCell className="text-right">{item.fat}</TableCell>
                         </TableRow>
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                        <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                           No food items logged yet
                         </TableCell>
                       </TableRow>

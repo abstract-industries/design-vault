@@ -55,7 +55,7 @@ export const PromptInput = ({ className, isCompact = false, onToggleView, childr
           layoutId="prompt-placeholder-compact"
           className="text-sm text-muted-foreground"
         >
-          Ask me anything...
+          Chat about food...
         </motion.span>
       </motion.div>
     );
