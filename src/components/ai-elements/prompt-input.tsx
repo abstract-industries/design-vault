@@ -1,12 +1,14 @@
 'use client';
 
-import { Loader2Icon, SendIcon, SquareIcon, XIcon } from 'lucide-react';
+import { Loader2Icon, SendIcon, SquareIcon, XIcon, ChartPieIcon } from 'lucide-react';
 import type {
   ComponentProps,
   HTMLAttributes,
   KeyboardEventHandler,
 } from 'react';
-import { Children } from 'react';
+import { Children, useState } from 'react';
+import * as React from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -19,17 +21,68 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { ChatStatus } from 'ai';
 
-export type PromptInputProps = HTMLAttributes<HTMLFormElement>;
+export type PromptInputProps = HTMLAttributes<HTMLFormElement> & {
+  isCompact?: boolean;
+  onToggleView?: () => void;
+};
 
-export const PromptInput = ({ className, ...props }: PromptInputProps) => (
-  <form
-    className={cn(
-      'w-full divide-y overflow-hidden rounded-xl border bg-background shadow-sm',
-      className,
-    )}
-    {...props}
-  />
-);
+const PromptInputContext = React.createContext<{
+  onToggleView?: () => void;
+}>({});
+
+export const usePromptInputContext = () => React.useContext(PromptInputContext);
+
+export const PromptInput = ({ className, isCompact = false, onToggleView, children, ...props }: PromptInputProps) => {
+
+  if (isCompact) {
+    return (
+      <motion.div
+        layoutId="prompt-container-compact"
+        className={cn(
+          'w-[200px] h-12 rounded-3xl border bg-background shadow-sm hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer flex items-center justify-center transition-colors',
+          className,
+        )}
+        onClick={onToggleView}
+        initial={false}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          duration: 0.5
+        }}
+      >
+        <motion.span 
+          layoutId="prompt-placeholder-compact"
+          className="text-sm text-muted-foreground"
+        >
+          Ask me anything...
+        </motion.span>
+      </motion.div>
+    );
+  }
+
+  return (
+    <PromptInputContext.Provider value={{ onToggleView }}>
+      <motion.form
+        layoutId="prompt-container-large"
+        className={cn(
+          'w-full divide-y overflow-hidden rounded-xl border bg-background shadow-sm',
+          className,
+        )}
+        initial={false}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          duration: 0.5
+        }}
+        {...props}
+      >
+        {children}
+      </motion.form>
+    </PromptInputContext.Provider>
+  );
+};
 
 export type PromptInputTextareaProps = ComponentProps<typeof Textarea> & {
   minHeight?: number;
@@ -61,21 +114,27 @@ export const PromptInputTextarea = ({
   };
 
   return (
-    <Textarea
-      className={cn(
-        'w-full resize-none rounded-none border-none p-3 shadow-none outline-none ring-0',
-        'bg-transparent dark:bg-transparent field-sizing-content max-h-[6lh]',
-        'focus-visible:ring-0',
-        className,
-      )}
-      name="message"
-      onChange={(e) => {
-        onChange?.(e);
-      }}
-      onKeyDown={handleKeyDown}
-      placeholder={placeholder}
-      {...props}
-    />
+    <motion.div className="relative">
+      <Textarea
+        className={cn(
+          'w-full resize-none rounded-none border-none p-3 shadow-none outline-none ring-0',
+          'bg-transparent dark:bg-transparent field-sizing-content max-h-[6lh]',
+          'focus-visible:ring-0',
+          className,
+        )}
+        name="message"
+        onChange={(e) => {
+          onChange?.(e);
+        }}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        {...props}
+      />
+      <motion.span 
+        layoutId="prompt-placeholder-large"
+        className="absolute left-3 top-3 text-sm text-muted-foreground pointer-events-none opacity-0"
+      />
+    </motion.div>
   );
 };
 
@@ -83,13 +142,41 @@ export type PromptInputToolbarProps = HTMLAttributes<HTMLDivElement>;
 
 export const PromptInputToolbar = ({
   className,
+  children,
   ...props
-}: PromptInputToolbarProps) => (
-  <div
-    className={cn('flex items-center justify-between p-1', className)}
-    {...props}
-  />
-);
+}: PromptInputToolbarProps) => {
+  const { onToggleView } = usePromptInputContext();
+  
+  return (
+    <div
+      className={cn('flex items-center justify-between p-1', className)}
+      {...props}
+    >
+      <AnimatePresence>
+        {onToggleView && (
+          <motion.div
+            key="toggle-view-button"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 gap-1.5 rounded-lg text-muted-foreground h-8 w-8"
+              onClick={onToggleView}
+              type="button"
+            >
+              <ChartPieIcon className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {children}
+    </div>
+  );
+};
 
 export type PromptInputToolsProps = HTMLAttributes<HTMLDivElement>;
 

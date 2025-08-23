@@ -265,6 +265,8 @@ export function AIChatNutritionLayout({
           <div className="absolute bottom-0 left-0 right-0 p-4 pb-4">
             <div className="max-w-3xl mx-auto">
               <PromptInput
+                isCompact={false}
+                onToggleView={() => onViewChange('ui')}
                 onSubmit={(e) => {
                   e.preventDefault();
                   const formData = new FormData(e.currentTarget);
@@ -291,14 +293,15 @@ export function AIChatNutritionLayout({
 
         {/* UI View - Always in DOM */}
         <motion.div
-          className="absolute inset-0 overflow-auto"
+          className="absolute inset-0 flex flex-col"
           animate={{
             opacity: !isChat ? 1 : 0,
             pointerEvents: !isChat ? 'auto' : 'none',
           }}
           transition={{ duration: 0.3 }}
         >
-          <div className="max-w-3xl mx-auto p-8 space-y-8">
+          <div className="flex-1 overflow-auto">
+            <div className="max-w-3xl mx-auto p-8 space-y-8 pb-20">
             {/* Date Title */}
             <h1 className="text-3xl font-semibold">
               {getSemanticDateTitle(date)}
@@ -393,6 +396,17 @@ export function AIChatNutritionLayout({
                   </TableBody>
                 </Table>
               </div>
+            </div>
+            </div>
+          </div>
+          
+          {/* Compact Prompt Input for UI View - Fixed at bottom */}
+          <div className="absolute bottom-2 left-0 right-0 p-4">
+            <div className="max-w-3xl mx-auto flex justify-center">
+              <PromptInput
+                isCompact={true}
+                onToggleView={() => onViewChange('chat')}
+              />
             </div>
           </div>
         </motion.div>
