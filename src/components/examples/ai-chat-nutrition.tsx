@@ -1,28 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Conversation, ConversationContent, ConversationScrollButton } from '@/components/ai-elements/conversation';
-import { Response } from '@/components/ai-elements/response';
-import { Actions, Action } from '@/components/ai-elements/actions';
-import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-elements/reasoning';
-import { PromptInput, PromptInputTextarea, PromptInputToolbar, PromptInputSubmit } from '@/components/ai-elements/prompt-input';
-import { ChartRadialSimple } from '@/components/calorie-components/chart-radial-simple';
-import { Tool, ToolHeader, ToolContent, ToolInput, ToolOutput } from '@/components/ai-elements/tool';
-import { Copy, Edit3, RotateCw } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-} from '@tanstack/react-table';
+import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
+import { AIChatNutritionChat } from './ai-chat-nutrition-chat';
+import { AIChatNutritionUI } from './ai-chat-nutrition-ui';
 
 interface Message {
   id: string;
@@ -40,117 +21,17 @@ interface Message {
   };
 }
 
-type NutritionItem = {
-  item: string;
-  quantity: string;
+interface FoodLogItem {
+  id: string;
+  name: string;
   calories: number;
   carbs: number;
   protein: number;
   fat: number;
-};
-
-const nutritionColumns: ColumnDef<NutritionItem>[] = [
-  {
-    accessorKey: 'item',
-    header: 'Item',
-  },
-  {
-    accessorKey: 'quantity',
-    header: 'Quantity',
-  },
-  {
-    accessorKey: 'calories',
-    header: 'Calories',
-  },
-  {
-    accessorKey: 'carbs',
-    header: 'Carbs (g)',
-  },
-  {
-    accessorKey: 'protein',
-    header: 'Protein (g)',
-  },
-  {
-    accessorKey: 'fat',
-    header: 'Fat (g)',
-  },
-];
-
-const NutritionDataTable = () => {
-  const nutritionData: NutritionItem[] = [
-    {
-      item: 'Pepperoni grandma slice',
-      quantity: '1',
-      calories: 500,
-      carbs: 35,
-      protein: 25,
-      fat: 28,
-    },
-    {
-      item: "Mike's hot honey",
-      quantity: '1 tsp',
-      calories: 150,
-      carbs: 12,
-      protein: 0,
-      fat: 0,
-    },
-  ];
-
-  const table = useReactTable({
-    data: nutritionData,
-    columns: nutritionColumns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  return (
-    <div className="overflow-hidden rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={nutritionColumns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  );
-};
+}
 
 export const AIChatNutritionExample = () => {
+  const [currentView, setCurrentView] = useState<'chat' | 'ui'>('chat');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -242,13 +123,14 @@ Total: 650 calories`,
     {
       id: '11',
       role: 'assistant',
-      content: (
-        <>
-          <p className="mb-4">Alright, here's how I broke it down. Let me know if this looks right to you.</p>
-          <NutritionDataTable />
-          <p className="mt-4">How's this look?</p>
-        </>
-      ),
+      content: `Alright, here's how I broke it down. Let me know if this looks right to you.
+
+| Item | Quantity | Calories | Carbs (g) | Protein (g) | Fat (g) |
+|------|----------|----------|-----------|-------------|---------|
+| Pepperoni grandma slice | 1 | 500 | 35 | 25 | 28 |
+| Mike's hot honey | 1 tsp | 150 | 12 | 0 | 0 |
+
+How's this look?`,
       showActions: true,
     },
     {
@@ -282,172 +164,102 @@ Total: 650 calories`,
     }
   ]);
 
-  const handleCopy = (messageId: string) => {
-    const message = messages.find(m => m.id === messageId);
-    if (message?.content) {
-      if (typeof message.content === 'string') {
-        navigator.clipboard.writeText(message.content);
-      }
+  // Sample food log data derived from chat
+  const foodLog: FoodLogItem[] = [
+    {
+      id: '1',
+      name: 'Pepperoni grandma slice',
+      calories: 500,
+      carbs: 35,
+      protein: 25,
+      fat: 28,
+    },
+    {
+      id: '2',
+      name: "Mike's hot honey",
+      calories: 150,
+      carbs: 12,
+      protein: 0,
+      fat: 0,
+    },
+    {
+      id: '3',
+      name: 'Coffee with milk',
+      calories: 60,
+      carbs: 8,
+      protein: 3,
+      fat: 2,
+    },
+    {
+      id: '4',
+      name: 'Greek yogurt',
+      calories: 100,
+      carbs: 12,
+      protein: 15,
+      fat: 0,
+    },
+    {
+      id: '5',
+      name: 'Banana',
+      calories: 105,
+      carbs: 27,
+      protein: 1,
+      fat: 0,
+    },
+    {
+      id: '6',
+      name: 'Grilled chicken salad',
+      calories: 350,
+      carbs: 20,
+      protein: 35,
+      fat: 15,
+    },
+    {
+      id: '7',
+      name: 'Apple',
+      calories: 95,
+      carbs: 25,
+      protein: 0,
+      fat: 0,
+    },
+    {
+      id: '8',
+      name: 'Protein shake',
+      calories: 160,
+      carbs: 8,
+      protein: 30,
+      fat: 2,
     }
-  };
+  ];
 
-  const handleEdit = (messageId: string) => {
-    console.log('Edit message:', messageId);
-  };
-
-  const handleRegenerate = (messageId: string) => {
-    console.log('Regenerate message:', messageId);
-  };
+  // Calculate totals
+  const totalCalories = foodLog.reduce((sum, item) => sum + item.calories, 0);
+  const totalProtein = foodLog.reduce((sum, item) => sum + item.protein, 0);
+  const totalCarbs = foodLog.reduce((sum, item) => sum + item.carbs, 0);
+  const totalFat = foodLog.reduce((sum, item) => sum + item.fat, 0);
 
   return (
-    <div className="h-full flex flex-col bg-background relative">
-      <Conversation className="h-full">
-        <ConversationContent className="max-w-3xl mx-auto w-full p-4 pb-40">
-          {messages.map((message) => (
-            <div key={message.id} className="mb-6">
-              {message.role === 'user' ? (
-                <div className="flex justify-end">
-                  <div className="max-w-[80%] rounded-lg bg-primary text-primary-foreground px-4 py-2">
-                    <p className="text-sm">{message.content}</p>
-                  </div>
-                </div>
-              ) : message.type === 'reasoning' && message.reasoningContent ? (
-                <>
-                  <div className="mb-4">
-                    <Reasoning>
-                      <ReasoningTrigger />
-                      <ReasoningContent>{message.reasoningContent}</ReasoningContent>
-                    </Reasoning>
-                  </div>
-                  {message.content && (
-                    <div className="space-y-2">
-                      <div>
-                        {typeof message.content === 'string' ? (
-                          <Response>{message.content}</Response>
-                        ) : (
-                          <div className="text-sm">{message.content}</div>
-                        )}
-                      </div>
-                      
-                      {message.showActions && (
-                        <Actions>
-                          <Action
-                            tooltip="Copy"
-                            onClick={() => handleCopy(message.id)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Action>
-                          <Action
-                            tooltip="Edit"
-                            onClick={() => handleEdit(message.id)}
-                          >
-                            <Edit3 className="h-4 w-4" />
-                          </Action>
-                          <Action
-                            tooltip="Regenerate"
-                            onClick={() => handleRegenerate(message.id)}
-                          >
-                            <RotateCw className="h-4 w-4" />
-                          </Action>
-                        </Actions>
-                      )}
-                    </div>
-                  )}
-                </>
-              ) : message.type === 'tool' && message.toolData ? (
-                <div className="mb-4">
-                  <Tool defaultOpen>
-                    <ToolHeader 
-                      type={message.toolData.type as any}
-                      state={message.toolData.state}
-                    />
-                    <ToolContent>
-                      <ToolInput input={message.toolData.input} />
-                      <ToolOutput 
-                        output={message.toolData.output}
-                        errorText={undefined}
-                      />
-                    </ToolContent>
-                  </Tool>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div>
-                    {typeof message.content === 'string' ? (
-                      <Response>{message.content}</Response>
-                    ) : (
-                      <div className="text-sm">{message.content}</div>
-                    )}
-                    
-                    {message.showChart && (
-                      <div className="mt-6">
-                        <div className="w-full max-w-sm">
-                          <ChartRadialSimple 
-                            calories={1520}
-                            maxCalories={2000}
-                            protein={67}
-                            carbs={147}
-                            fat={63}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {message.showActions && (
-                    <Actions>
-                      <Action
-                        tooltip="Copy"
-                        onClick={() => handleCopy(message.id)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Action>
-                      <Action
-                        tooltip="Edit"
-                        onClick={() => handleEdit(message.id)}
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </Action>
-                      <Action
-                        tooltip="Regenerate"
-                        onClick={() => handleRegenerate(message.id)}
-                      >
-                        <RotateCw className="h-4 w-4" />
-                      </Action>
-                    </Actions>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </ConversationContent>
-        <ConversationScrollButton />
-      </Conversation>
+    <div className="h-full flex flex-col bg-background">
+      <AIChatNutritionHeader 
+        currentView={currentView} 
+        onViewChange={setCurrentView} 
+      />
       
-      <div className="absolute bottom-0 left-0 right-0 p-4 pb-8">
-        <div className="max-w-3xl mx-auto">
-          <PromptInput
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const message = formData.get('message');
-              if (message) {
-                setMessages([...messages, {
-                  id: String(messages.length + 1),
-                  role: 'user',
-                  content: String(message),
-                }]);
-                e.currentTarget.reset();
-              }
-            }}
-          >
-            <PromptInputTextarea placeholder="Tell me what you ate..." />
-            <PromptInputToolbar>
-              <div className="flex-1" />
-              <PromptInputSubmit />
-            </PromptInputToolbar>
-          </PromptInput>
-        </div>
+      <div className="flex-1 overflow-hidden">
+        {currentView === 'chat' ? (
+          <AIChatNutritionChat 
+            messages={messages} 
+            setMessages={setMessages} 
+          />
+        ) : (
+          <AIChatNutritionUI 
+            foodLog={foodLog}
+            totalCalories={totalCalories}
+            totalProtein={totalProtein}
+            totalCarbs={totalCarbs}
+            totalFat={totalFat}
+          />
+        )}
       </div>
     </div>
   );
