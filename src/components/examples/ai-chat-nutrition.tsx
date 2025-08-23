@@ -100,7 +100,7 @@ Your lunch provided a substantial amount of your daily caloric needs. The Caesar
                     <Response>{message.content}</Response>
                     
                     {message.showChart && (
-                      <div className="mt-6 flex justify-center">
+                      <div className="mt-6">
                         <div className="w-full max-w-sm">
                           <ChartRadialSimple 
                             calories={870}
