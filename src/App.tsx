@@ -1,34 +1,25 @@
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom"
-import { ComponentList } from "@/components/ComponentList"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { ComponentView } from "@/components/ComponentView"
 import { Welcome } from "@/components/Welcome"
-import { useMediaQuery } from "@/hooks/useMediaQuery"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 
 function Layout() {
-  const { id } = useParams<{ id: string }>()
-  const isMobile = useMediaQuery("(max-width: 768px)")
-
-  // Mobile layout - show either list or detail view
-  if (isMobile) {
-    return (
-      <div className="h-screen">
-        <Routes>
-          <Route path="/" element={<ComponentList isMobile={true} />} />
-          <Route path="/component/:id" element={<ComponentView isMobile={true} />} />
-        </Routes>
-      </div>
-    )
-  }
-
-  // Desktop layout - show both side by side
   return (
-    <div className="flex h-screen">
-      <ComponentList selectedId={id} />
-      <Routes>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/component/:id" element={<ComponentView />} />
-      </Routes>
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+        </header>
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/component/:id" element={<ComponentView />} />
+          </Routes>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 
