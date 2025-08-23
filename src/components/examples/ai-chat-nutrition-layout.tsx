@@ -254,7 +254,7 @@ export function AIChatNutritionLayout({
             <ConversationScrollButton />
           </Conversation>
           
-          <div className="absolute bottom-0 left-0 right-0 p-4 pb-8">
+          <div className="absolute bottom-0 left-0 right-0 p-4 pb-4">
             <div className="max-w-3xl mx-auto">
               <PromptInput
                 onSubmit={(e) => {
