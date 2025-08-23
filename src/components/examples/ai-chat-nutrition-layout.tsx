@@ -254,6 +254,14 @@ export function AIChatNutritionLayout({
             <ConversationScrollButton />
           </Conversation>
           
+          {/* Gradient overlay to fade conversation behind prompt */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to top, rgb(255 255 255 / 1) 0%, rgb(255 255 255 / 1) 10%, rgb(255 255 255 / 0) 100%)'
+            }}
+          />
+          
           <div className="absolute bottom-0 left-0 right-0 p-4 pb-4">
             <div className="max-w-3xl mx-auto">
               <PromptInput
