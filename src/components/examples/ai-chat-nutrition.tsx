@@ -251,42 +251,26 @@ How's this look?`,
         <div className="flex-1 overflow-hidden relative">
           <AnimatePresence mode="wait">
             {currentView === 'chat' ? (
-              <motion.div
+              <AIChatNutritionChat 
                 key="chat"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                <AIChatNutritionChat 
-                  messages={messages} 
-                  setMessages={setMessages}
-                  onChartClick={() => setCurrentView('ui')}
-                  totalCalories={totalCalories}
-                  totalProtein={totalProtein}
-                  totalCarbs={totalCarbs}
-                  totalFat={totalFat}
-                />
-              </motion.div>
+                messages={messages} 
+                setMessages={setMessages}
+                onChartClick={() => setCurrentView('ui')}
+                totalCalories={totalCalories}
+                totalProtein={totalProtein}
+                totalCarbs={totalCarbs}
+                totalFat={totalFat}
+              />
             ) : (
-              <motion.div
+              <AIChatNutritionUI 
                 key="ui"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                <AIChatNutritionUI 
-                  foodLog={foodLog}
-                  totalCalories={totalCalories}
-                  totalProtein={totalProtein}
-                  totalCarbs={totalCarbs}
-                  totalFat={totalFat}
-                  onChartClick={() => setCurrentView('chat')}
-                />
-              </motion.div>
+                foodLog={foodLog}
+                totalCalories={totalCalories}
+                totalProtein={totalProtein}
+                totalCarbs={totalCarbs}
+                totalFat={totalFat}
+                onChartClick={() => setCurrentView('chat')}
+              />
             )}
           </AnimatePresence>
         </div>

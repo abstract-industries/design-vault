@@ -33,8 +33,11 @@ export function ChartRadialClickable({
       transition={{
         layout: {
           type: "spring",
-          bounce: 0.2,
-          duration: 0.6
+          bounce: 0.25,
+          duration: 0.5
+        },
+        scale: {
+          duration: 0.2
         }
       }}
     >

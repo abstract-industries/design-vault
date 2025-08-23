@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import * as motion from 'motion/react-client';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -67,36 +68,43 @@ export function AIChatNutritionUI({
     <div className="flex flex-col h-full bg-background">
       <div className="flex-1 overflow-auto">
         <div className="max-w-3xl mx-auto p-8 space-y-8">
-          {/* Date Title */}
-          <h1 className="text-3xl font-semibold">
-            {getSemanticDateTitle(date)}
-          </h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            className="space-y-8"
+          >
+            {/* Date Title */}
+            <h1 className="text-3xl font-semibold">
+              {getSemanticDateTitle(date)}
+            </h1>
 
-          {/* Date Picker */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "w-[280px] justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={(newDate) => newDate && setDate(newDate)}
-                initialFocus
-              />
+            {/* Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[280px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(newDate) => newDate && setDate(newDate)}
+                  initialFocus
+                />
             </PopoverContent>
-          </Popover>
+            </Popover>
+          </motion.div>
 
-          {/* Nutrition Chart */}
+          {/* Nutrition Chart - outside fade wrapper */}
           <div className="w-full max-w-sm">
             <ChartRadialClickable
               calories={totalCalories}
@@ -109,7 +117,12 @@ export function AIChatNutritionUI({
           </div>
 
           {/* Food Log */}
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.3, delay: 0.3 } }}
+            exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            className="space-y-4"
+          >
             <h2 className="text-xl font-semibold">Log</h2>
             <div className="rounded-md border">
               <Table>
@@ -141,7 +154,7 @@ export function AIChatNutritionUI({
                 </TableBody>
               </Table>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
