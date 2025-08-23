@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, LayoutGroup } from 'motion/react';
-import * as motion from 'motion/react-client';
+import { LayoutGroup } from 'motion/react';
 import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
-import { AIChatNutritionChat } from './ai-chat-nutrition-chat';
-import { AIChatNutritionUI } from './ai-chat-nutrition-ui';
+import { AIChatNutritionCombined } from './ai-chat-nutrition-combined';
 
 interface Message {
   id: string;
@@ -249,30 +247,17 @@ How's this look?`,
         />
         
         <div className="flex-1 overflow-hidden relative">
-          <AnimatePresence mode="wait">
-            {currentView === 'chat' ? (
-              <AIChatNutritionChat 
-                key="chat"
-                messages={messages} 
-                setMessages={setMessages}
-                onChartClick={() => setCurrentView('ui')}
-                totalCalories={totalCalories}
-                totalProtein={totalProtein}
-                totalCarbs={totalCarbs}
-                totalFat={totalFat}
-              />
-            ) : (
-              <AIChatNutritionUI 
-                key="ui"
-                foodLog={foodLog}
-                totalCalories={totalCalories}
-                totalProtein={totalProtein}
-                totalCarbs={totalCarbs}
-                totalFat={totalFat}
-                onChartClick={() => setCurrentView('chat')}
-              />
-            )}
-          </AnimatePresence>
+          <AIChatNutritionCombined
+            currentView={currentView}
+            onViewChange={setCurrentView}
+            messages={messages}
+            setMessages={setMessages}
+            foodLog={foodLog}
+            totalCalories={totalCalories}
+            totalProtein={totalProtein}
+            totalCarbs={totalCarbs}
+            totalFat={totalFat}
+          />
         </div>
       </div>
     </LayoutGroup>
