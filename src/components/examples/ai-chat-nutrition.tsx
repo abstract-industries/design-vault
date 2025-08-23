@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { LayoutGroup } from 'motion/react';
 import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
-import { AIChatNutritionMotion } from './ai-chat-nutrition-motion';
+import { AIChatNutritionLayout } from './ai-chat-nutrition-layout';
 
 interface Message {
   id: string;
@@ -247,7 +247,7 @@ How's this look?`,
         />
         
         <div className="flex-1 overflow-hidden relative">
-          <AIChatNutritionMotion
+          <AIChatNutritionLayout
             currentView={currentView}
             onViewChange={setCurrentView}
             messages={messages}
