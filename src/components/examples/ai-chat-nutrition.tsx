@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { LayoutGroup } from 'motion/react';
-import { AIChatNutritionHeader } from './ai-chat-nutrition-header';
 import { AIChatNutritionLayout } from './ai-chat-nutrition-layout';
 
 interface Message {
@@ -31,7 +30,7 @@ interface FoodLogItem {
 }
 
 export const AIChatNutritionExample = () => {
-  const [currentView, setCurrentView] = useState<'chat' | 'ui'>('chat');
+  const [currentView, setCurrentView] = useState<'chat' | 'ui'>('ui');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -56,9 +55,7 @@ export const AIChatNutritionExample = () => {
       reasoningContent: 'Thinking...',
       content: `Ok got it, you had some pizza.
 
-| Item | Quantity |
-|------|----------|
-| Pizza | -- |
+- Pizza
 
 How much did you eat?`,
       showActions: true,
@@ -123,14 +120,44 @@ Total: 650 calories`,
     {
       id: '11',
       role: 'assistant',
-      content: `Alright, here's how I broke it down. Let me know if this looks right to you.
-
-| Item | Quantity | Calories | Carbs (g) | Protein (g) | Fat (g) |
-|------|----------|----------|-----------|-------------|---------|
-| Pepperoni grandma slice | 1 | 500 | 35 | 25 | 28 |
-| Mike's hot honey | 1 tsp | 150 | 12 | 0 | 0 |
-
-How's this look?`,
+      content: (
+        <div>
+          <p className="mb-4">Alright, here's how I broke it down. Let me know if this looks right to you.</p>
+          <div className="rounded-md border overflow-x-auto mb-4">
+            <table className="w-full divide-y divide-border">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Item</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Quantity</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Calories</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Carbs (g)</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Protein (g)</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Fat (g)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                <tr>
+                  <td className="px-3 py-2 text-sm font-medium">Pepperoni grandma slice</td>
+                  <td className="px-3 py-2 text-sm">1</td>
+                  <td className="px-3 py-2 text-sm text-right">500</td>
+                  <td className="px-3 py-2 text-sm text-right">35</td>
+                  <td className="px-3 py-2 text-sm text-right">25</td>
+                  <td className="px-3 py-2 text-sm text-right">28</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 text-sm font-medium">Mike's hot honey</td>
+                  <td className="px-3 py-2 text-sm">1 tsp</td>
+                  <td className="px-3 py-2 text-sm text-right">150</td>
+                  <td className="px-3 py-2 text-sm text-right">12</td>
+                  <td className="px-3 py-2 text-sm text-right">0</td>
+                  <td className="px-3 py-2 text-sm text-right">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>How's this look?</p>
+        </div>
+      ),
       showActions: true,
     },
     {
@@ -241,11 +268,6 @@ How's this look?`,
   return (
     <LayoutGroup>
       <div className="h-full flex flex-col bg-background">
-        <AIChatNutritionHeader 
-          currentView={currentView} 
-          onViewChange={setCurrentView} 
-        />
-        
         <div className="flex-1 overflow-hidden relative">
           <AIChatNutritionLayout
             currentView={currentView}
